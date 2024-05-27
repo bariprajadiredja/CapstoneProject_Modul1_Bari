@@ -1,0 +1,180 @@
+mobil = {
+    "ID001": {"Merk": "Toyota", "Tipe": "Avanza", "Jenis": "MPV", "Status": "Tersedia", "Harga": 400000},
+    "ID002": {"Merk": "Toyota", "Tipe": "Innova", "Jenis": "MPV", "Status": "Tersedia", "Harga": 600000},
+    "ID003": {"Merk": "Daihatsu", "Tipe": "Xenia", "Jenis": "MPV", "Status": "Tersedia", "Harga": 700000},
+    "ID004": {"Merk": "Toyota", "Tipe": "Fortuner", "Jenis": "SUV", "Status": "Tersedia", "Harga": 800000},
+    "ID005": {"Merk": "Mitsubishi", "Tipe": "Pajero Sport", "Jenis": "SUV", "Status": "Tersedia", "Harga": 1200000},
+    "ID006": {"Merk": "Suzuki", "Tipe": "Ertiga", "Jenis": "MPV", "Status": "Tersedia", "Harga": 500000},
+    "ID007": {"Merk": "Mitsubishi", "Tipe": "Xpander", "Jenis": "MPV", "Status": "Tersedia", "Harga": 900000},
+    "ID008": {"Merk": "Toyota", "Tipe": "Alphard", "Jenis": "MPV", "Status": "Tersedia", "Harga": 2000000}
+}
+
+pelanggan = []
+peminjam = []
+admin = []
+
+def daftar_pelanggan(nama, umur, nomor_HP):
+    pelanggan.append({"Nama": nama.lower(), "Umur": umur, "Nomor_HP": nomor_HP})
+    print("Pelanggan baru dengan nama '{}' berumur '{}' tahun, dan memiliki nomor HP '{}' berhasil didaftarkan.".format(nama, umur, nomor_HP))
+
+def daftar_admin(nama, umur, nomor_HP):
+    admin.append({"Nama": nama.lower(), "Umur": umur, "Nomor_HP": nomor_HP})
+    print("Admin baru dengan nama '{}' berumur '{}' tahun, dan memiliki nomor HP '{}' berhasil didaftarkan.".format(nama, umur, nomor_HP))
+
+def tampilkan_pelanggan():
+    print("Daftar Pelanggan:")
+    for p in pelanggan:
+        print(p)
+
+def tampilkan_admin():
+    print("Daftar Admin:")
+    for a in admin:
+        print(a)
+
+def hapus_pelanggan(nama):
+    for p in pelanggan:
+        if p["Nama"] == nama.lower():
+            pelanggan.remove(p)
+            print("Keanggotaan '{}' sudah dihapus.".format(nama))
+            break
+    else:
+        print("Pelanggan dengan nama '{}' tidak ditemukan.".format(nama))
+
+def hapus_admin(nama):
+    for a in admin:
+        if a["Nama"] == nama.lower():
+            admin.remove(a)
+            print("Admin '{}' sudah dihapus.".format(nama))
+            break
+    else:
+        print("Admin dengan nama '{}' tidak ditemukan.".format(nama))
+
+def tampilkan_mobil():
+    print("Daftar Mobil:")
+    for ID, info in mobil.items():
+        print(f"ID: {ID}, Merk: {info['Merk']}, Tipe: {info['Tipe']}, Jenis: {info['Jenis']}, Status: {info['Status']}, Harga: {info['Harga']}")
+
+def sewa_mobil(ID, penyewa, tanggal, durasi):
+    NIK = input("Masukkan NIK Anda (minimal 16 digit angka): ")
+    if len(NIK) != 16 or not NIK.isdigit():
+        print("NIK harus terdiri dari 16 digit angka.")
+        return
+    if ID in mobil and mobil[ID]["Status"] == "Tersedia":
+        mobil[ID]["Status"] = "Tidak Tersedia"
+        total_harga = mobil[ID]["Harga"] * durasi
+        peminjam.append({"Penyewa": penyewa.lower(), "ID": ID, "Durasi": durasi, "Total_Harga": total_harga, "NIK": NIK})
+        print("Mobil dengan ID '{}' berhasil disewa oleh '{}' pada tanggal '{}' dengan durasi '{}' hari. Total harga: {}"
+              .format(ID, penyewa, tanggal, durasi, total_harga))
+    else:
+        print("Mobil dengan ID '{}' tidak tersedia atau sudah disewa.".format(ID))
+
+def kembalikan_mobil(ID, penyewa, tanggal_pengembalian):
+    if ID in mobil and mobil[ID]["Status"] == "Tidak Tersedia":
+        mobil[ID]["Status"] = "Tersedia"
+        for p in peminjam:
+            if p["Penyewa"] == penyewa.lower() and p["ID"] == ID:
+                peminjam.remove(p)
+                break
+        print("Mobil dengan ID '{}' berhasil dikembalikan oleh '{}' pada tanggal '{}'.".format(ID, penyewa, tanggal_pengembalian))
+    else:
+        print("Mobil dengan ID '{}' tidak ditemukan atau sudah dikembalikan.".format(ID))
+
+def tambahkan_mobil(ID, merk, nama, kategori, harga_sewa):
+    mobil[ID] = {"Merk": merk, "Tipe": nama, "Jenis": kategori, "Status": "Tersedia", "Harga": harga_sewa}
+    print("Mobil dengan ID '{}', merk '{}', nama '{}', kategori '{}', dan harga sewa '{}' berhasil ditambahkan.".format(ID, merk, nama, kategori, harga_sewa))
+
+def hapus_mobil(ID):
+    if ID in mobil:
+        del mobil[ID]
+        print("Mobil dengan ID '{}' berhasil dihapus.".format(ID))
+    else:
+        print("Mobil dengan ID '{}' tidak ditemukan.".format(ID))
+
+def opsi_pelanggan(nama):
+    while True:
+        print("Selamat datang, " + nama + "! Fitur yang tersedia untuk Anda:")
+        print("1. Daftar mobil")
+        print("2. Sewa mobil")
+        print("3. Kembalikan mobil")
+        print("4. Keluar")
+        pilihan_pelanggan = int(input("Apa pilihan Anda? "))
+        if pilihan_pelanggan == 1:
+            tampilkan_mobil()
+        elif pilihan_pelanggan == 2:
+            tampilkan_mobil()
+            ID = input("Masukkan ID mobil yang ingin disewa: ")
+            tanggal = input("Masukkan tanggal peminjaman (DD/MM/YYYY): ")
+            durasi = int(input("Masukkan durasi sewa (dalam hari): "))
+            sewa_mobil(ID, nama, tanggal, durasi)
+        elif pilihan_pelanggan == 3:
+            ID = input("Masukkan ID mobil yang ingin dikembalikan: ")
+            tanggal_pengembalian = input("Masukkan tanggal pengembalian (DD/MM/YYYY): ")
+            kembalikan_mobil(ID, nama, tanggal_pengembalian)
+        elif pilihan_pelanggan == 4:
+            break
+        else:
+            print("Pilihan tidak valid.")
+
+def opsi_admin(nama):
+    while True:
+        print("Selamat datang, admin " + nama + "! Fitur yang tersedia untuk Anda:")
+        print("1. Tambah mobil")
+        print("2. Hapus mobil")
+        print("3. Daftar pelanggan")
+        print("4. Daftar admin")
+        print("5. Daftar peminjam")
+        print("6. Keluar")
+        pilihan_admin = int(input("Apa pilihan Anda? "))
+        if pilihan_admin == 1:
+            ID = input("Masukkan ID mobil yang ingin ditambahkan: ")
+            merk = input("Masukkan merk mobil: ")
+            nama_mobil = input("Masukkan nama mobil: ")
+            kategori = input("Masukkan kategori mobil: ")
+            harga_sewa = int(input("Masukkan harga sewa per hari: "))
+            tambahkan_mobil(ID, merk, nama_mobil, kategori, harga_sewa)
+        elif pilihan_admin == 2:
+            ID = input("Masukkan ID mobil yang ingin dihapus: ")
+            hapus_mobil(ID)
+        elif pilihan_admin == 3:
+            tampilkan_pelanggan()
+        elif pilihan_admin == 4:
+            tampilkan_admin()
+        elif pilihan_admin == 5:
+            print("Daftar Peminjam:")
+            for p in peminjam:
+                print(p)
+        elif pilihan_admin == 6:
+            break
+        else:
+            print("Pilihan tidak valid.")
+
+def opsi_pendaftaran(pilihan_pendaftaran):
+    if pilihan_pendaftaran == 1:
+        nama = input("Masukkan nama: ")
+        umur = int(input("Masukkan umur: "))
+        nomor_HP = input("Masukkan nomor HP: ")
+        daftar_pelanggan(nama, umur, nomor_HP)
+        opsi_pelanggan(nama)
+    elif pilihan_pendaftaran == 2:
+        nama = input("Masukkan nama: ")
+        umur = int(input("Masukkan umur: "))
+        nomor_HP = input("Masukkan nomor HP: ")
+        daftar_admin(nama, umur, nomor_HP)
+        opsi_admin(nama)
+    else:
+        print("Pilihan tidak valid.")
+
+print("Selamat datang di Rental Mobil XYZ")
+
+nama = input("Siapa nama Anda? ")
+
+if nama in [p["Nama"] for p in pelanggan]:
+    opsi_pelanggan(nama)
+elif nama in [a["Nama"] for a in admin]:
+    opsi_admin(nama)
+else:
+    print("Maaf, Anda tidak terdaftar sebagai pelanggan atau admin.")
+    print("1. Daftar sebagai pelanggan")
+    print("2. Daftar sebagai admin")
+    pilihan_pendaftaran = int(input("Apa pilihan Anda? "))
+    opsi_pendaftaran(pilihan_pendaftaran)
