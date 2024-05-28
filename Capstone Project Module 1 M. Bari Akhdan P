@@ -164,7 +164,7 @@ def opsi_pendaftaran(pilihan_pendaftaran):
     else:
         print("Pilihan tidak valid.")
 
-print("Selamat datang di Rental Mobil XYZ")
+print("Selamat datang di Rental Mobil Jaya Abadi")
 
 nama = input("Siapa nama Anda? ")
 
